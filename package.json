@@ -1,14 +1,13 @@
 {
-  "name": "Email Inliner",
+  "name": "",
+  "version": "",
   "description": "The `gulpfile.js` is a task runner to inline the css styles in a HTML email.",
-  "main": "gulpfile.js",
-  "dependencies": {
+  "devDependencies": {
     "glob": "^7.1.1",
     "gulp": "^3.9.1",
     "gulp-inline-css": "^3.1.0",
     "gulp-prettify": "^0.5.0"
   },
   "author": "Richard Jackson",
-  "version": "1.0",
   "license": "ISC"
 }
