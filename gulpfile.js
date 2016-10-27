@@ -251,17 +251,16 @@ gulp.task('links', ['css-selector-per-line'], function(callback) {
         return fs.readFile(filename, 'utf8', function (err, data) {
           if (err) { return console.log(err); }
 
-          var utmSource = utmMedium = utmCampaign = "";
+          var utmSource = "", utmMedium = "", utmCampaign = "",
+          utmSourceMatch = data.match('data\-utm\-source\=\"(.*?)\"'),
+          utmMediumMatch = data.match('data\-utm\-medium\=\"(.*?)\"'),
+          utmCampaignMatch = data.match('data\-utm\-campaign\=\"(.*?)\"');
 
           // get meta data attributes
-          var utmSourceMatch = data.match('data\-utm\-source\=\"(.*?)\"');
           if (utmSourceMatch !== undefined && utmSourceMatch !== null) { utmSource = utmSourceMatch[1]; }
-
-          var utmMediumMatch = data.match('data\-utm\-medium\=\"(.*?)\"');
           if (utmMediumMatch !== undefined && utmMediumMatch !== null) { utmMedium = utmMediumMatch[1]; }
-
-          var utmCampaignMatch = data.match('data\-utm\-campaign\=\"(.*?)\"');
           if (utmCampaignMatch !== undefined && utmCampaignMatch !== null) { utmCampaign = utmCampaignMatch[1]; }
+          
 
           // if analytics defined
           if (utmSource !== "" && utmMedium !== "" && utmCampaign !== "") {
@@ -271,7 +270,7 @@ gulp.task('links', ['css-selector-per-line'], function(callback) {
               return setTracking(anchorData, utmSource, utmMedium, utmCampaign);
             });
 
-            // Links Part 2
+            // Links Part 2 // i.e.: bulletproof buttons
             linkAnchor = linkAnchor.replace(/<v[^>]*>/g, function(vectorData) {
               return setTracking(vectorData, utmSource, utmMedium, utmCampaign);
             });
