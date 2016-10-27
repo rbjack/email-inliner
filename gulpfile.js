@@ -186,16 +186,16 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
           // regex target all styles
           var result = data.replace(/\<style[^\>]+\>([\s\S]+?\<\/style\>)/igm, function(styles) {
 
-            // resets
+            // resets / minifyish
             var css = styles.replace(/\r?\n|\r/g, ''); // remove `new lines` &/or `carriage returns`
             css = css.replace(/\s\s+/g, ' ');          // remove more than one space between everything
 
             // formats
-            css = css.replace(/\}\s/g, "\}\n      ");   // add new line to end of selector + spacing
-            css = css.replace(/"\>/g, "\"\>\n     ");  // add new line to end of first selector + spacing
+            css = css.replace(/\}\s/g, "\}\n      ");   // add new line + spacing to end of selector
+            css = css.replace(/"\>/g, "\"\>\n     ");  // add new line + spacing to end of first selector
             css = css.replace(/  \<\//g, '\<\/');      // remove spacing before end of style tag
 
-            // add new line to end of first selector + spacing inside a media query
+            // add new line + spacing to end of first selector inside of a media query
             css = css.replace(/@media[^\{]+\{\s/g, function(mq) {
               return mq.replace(/\{\s/g, "\{\n      ");
             });
@@ -272,12 +272,12 @@ gulp.task('links', ['css-selector-per-line'], function(callback) {
             });
 
             // Links Part 2
-            var linkVector = linkAnchor.replace(/<v[^>]*>/g, function(vectorData) {
+            linkAnchor = linkAnchor.replace(/<v[^>]*>/g, function(vectorData) {
               return setTracking(vectorData, utmSource, utmMedium, utmCampaign);
             });
 
             // overwrite email with new modifications
-            fs.writeFile(filename, linkVector, function (err) {
+            fs.writeFile(filename, linkAnchor, function (err) {
               if (err) return console.log(err);
             });
 
