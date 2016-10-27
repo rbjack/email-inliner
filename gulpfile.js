@@ -82,68 +82,9 @@ function setTracking(linkData, utmSource, utmMedium, utmCampaign) {
   } else { return linkData; }
 }
 
-// add google analytic parameters to links
-gulp.task('links', ['css-selector-per-line'], function(callback) {
 
-  // loop through all html files
-  glob('./build/*.html', function (err, matches) {
-    if (err) { return console.log(err); }
 
-    var i, count = 0;
 
-    for(i = 0; i < matches.length; i++) {
-
-      // get the wildcard filename
-      var filename = matches[i];
-
-      // enclose the filename inside an IIFE
-      (function(filename) {
-        return fs.readFile(filename, 'utf8', function (err, data) {
-          if (err) { return console.log(err); }
-
-          var utmSource = utmMedium = utmCampaign = "";
-
-          // get meta data attributes
-          var utmSourceMatch = data.match('data\-utm\-source\=\"(.*?)\"');
-          if (utmSourceMatch !== undefined && utmSourceMatch !== null) { utmSource = utmSourceMatch[1]; }
-
-          var utmMediumMatch = data.match('data\-utm\-medium\=\"(.*?)\"');
-          if (utmMediumMatch !== undefined && utmMediumMatch !== null) { utmMedium = utmMediumMatch[1]; }
-
-          var utmCampaignMatch = data.match('data\-utm\-campaign\=\"(.*?)\"');
-          if (utmCampaignMatch !== undefined && utmCampaignMatch !== null) { utmCampaign = utmCampaignMatch[1]; }
-
-          // if analytics defined
-          if (utmSource !== "" && utmMedium !== "" && utmCampaign !== "") {
-
-            // Links Part 1
-            var linkAnchor = data.replace(/<a[^>]*>/g, function(anchorData) {
-              return setTracking(anchorData, utmSource, utmMedium, utmCampaign);
-            });
-
-            // Links Part 2
-            var linkVector = linkAnchor.replace(/<v[^>]*>/g, function(vectorData) {
-              return setTracking(vectorData, utmSource, utmMedium, utmCampaign);
-            });
-
-            // overwrite email with new modifications
-            fs.writeFile(filename, linkVector, function (err) {
-              if (err) return console.log(err);
-            });
-
-          }
-
-          // if there is more than one email...
-          count++;
-          if (count >= matches.length) {
-            callback(); // ... continue gulp sequence
-          }
-
-        });
-      })(filename);
-    }
-  });
-});
 
 // Move styles inline except for styles in a media query
 gulp.task('inline', function(callback) {
@@ -158,6 +99,7 @@ gulp.task('inline', function(callback) {
     }))
     .pipe(gulp.dest('build/'));
 });
+
 
 // Remove the "not inline" media query wrapper
 // (so they aren't inlined from the "inliner" task)
@@ -209,6 +151,7 @@ gulp.task('remove-not-inline-media-query', ['inline'], function(callback) {
   });
 });
 
+
 // Format/Clean-up html & css
 gulp.task('prettify', ['remove-not-inline-media-query'], function(callback) {
   return gulp.src( 'build/*.html' )
@@ -219,6 +162,7 @@ gulp.task('prettify', ['remove-not-inline-media-query'], function(callback) {
     } ) )
     .pipe( gulp.dest( 'build' ) );
 });
+
 
 // Reduced css to one line per selector(s)
 gulp.task('css-selector-per-line', ['prettify'], function(callback) {
@@ -286,6 +230,71 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
 
   });
 });
+
+
+// add google analytic parameters to links
+gulp.task('links', ['css-selector-per-line'], function(callback) {
+
+  // loop through all html files
+  glob('./build/*.html', function (err, matches) {
+    if (err) { return console.log(err); }
+
+    var i, count = 0;
+
+    for(i = 0; i < matches.length; i++) {
+
+      // get the wildcard filename
+      var filename = matches[i];
+
+      // enclose the filename inside an IIFE
+      (function(filename) {
+        return fs.readFile(filename, 'utf8', function (err, data) {
+          if (err) { return console.log(err); }
+
+          var utmSource = utmMedium = utmCampaign = "";
+
+          // get meta data attributes
+          var utmSourceMatch = data.match('data\-utm\-source\=\"(.*?)\"');
+          if (utmSourceMatch !== undefined && utmSourceMatch !== null) { utmSource = utmSourceMatch[1]; }
+
+          var utmMediumMatch = data.match('data\-utm\-medium\=\"(.*?)\"');
+          if (utmMediumMatch !== undefined && utmMediumMatch !== null) { utmMedium = utmMediumMatch[1]; }
+
+          var utmCampaignMatch = data.match('data\-utm\-campaign\=\"(.*?)\"');
+          if (utmCampaignMatch !== undefined && utmCampaignMatch !== null) { utmCampaign = utmCampaignMatch[1]; }
+
+          // if analytics defined
+          if (utmSource !== "" && utmMedium !== "" && utmCampaign !== "") {
+
+            // Links Part 1
+            var linkAnchor = data.replace(/<a[^>]*>/g, function(anchorData) {
+              return setTracking(anchorData, utmSource, utmMedium, utmCampaign);
+            });
+
+            // Links Part 2
+            var linkVector = linkAnchor.replace(/<v[^>]*>/g, function(vectorData) {
+              return setTracking(vectorData, utmSource, utmMedium, utmCampaign);
+            });
+
+            // overwrite email with new modifications
+            fs.writeFile(filename, linkVector, function (err) {
+              if (err) return console.log(err);
+            });
+
+          }
+
+          // if there is more than one email...
+          count++;
+          if (count >= matches.length) {
+            callback(); // ... continue gulp sequence
+          }
+
+        });
+      })(filename);
+    }
+  });
+});
+
 
 // Default: start the task cascade
 gulp.task('default', ['links'], function(callback) {
