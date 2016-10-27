@@ -19,14 +19,14 @@ var prettify  = require( 'gulp-prettify');
 function getParameters(href, parameters, utm, tag) {
 
   var utmPatt = new RegExp("^(utm_"+ utm +"\=)", ''), 
-    params = "";
+    param = "";
 
   if (utmPatt.test(href) === false) {
-    if (parameters !== "") { parameters += "&"; }
-    params += "utm_"+ utm +"="+ tag;
+    if (parameters !== "") { param += "&"; }
+    param += "utm_"+ utm +"="+ tag;
   }
 
-  return params;
+  return param;
 }
 
 // add tracking to link
