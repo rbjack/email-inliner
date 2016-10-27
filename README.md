@@ -48,10 +48,11 @@ $ gulp
 The inliner requires that your css styles are embedded into the HTML head of the document in
 a style tag.
 
-It will inline all styles, in a seperate file inside a `build` folder, and then delete them from 
-the new rendered email file, except in the case where the styles are in a `@media` query. If there 
-are styles that you don't want inlined outside of a media query, the task runner has a special media 
-query wrapper that gets deleted (but not the styles inside) when compiled.
+In a seperate file inside a `build` folder, the task runner will inline all styles, and then delete 
+them from the new rendered email file, except in the case where the styles are in a `@media` query. 
+
+If there are styles that you don't want inlined and need to be outside of a media query, the task 
+runner has a special media query wrapper that gets deleted (but not the styles inside) when compiled.
 
 ```
 @media not inline {
