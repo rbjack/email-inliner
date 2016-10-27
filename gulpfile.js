@@ -220,6 +220,7 @@ gulp.task('prettify', ['remove-not-inline-media-query'], function(callback) {
     .pipe( gulp.dest( 'build' ) );
 });
 
+// 
 gulp.task('css-selector-per-line', ['prettify'], function(callback) {
 
   // loop through all html files
@@ -238,7 +239,7 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
         return fs.readFile(filename, 'utf8', function (err,data) {
           if (err) { return console.log(err); }
 
-          // regex target all styles in a "not inline" media query
+          // regex target all styles
           var result = data.replace(/\<style[^\>]+\>([\s\S]+?\<\/style\>)/igm, function(styles) {
 
             // resets
@@ -254,7 +255,6 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
             css = css.replace(/@media[^\{]+\{\s/g, function(mq) {
               return mq.replace(/\{\s/g, "\{\n      ");
             });
-
 
             // Indend selectors inside @media query
             css = css.replace(/@media[^{]+\{([\s\S]+?})\s*}/igm, function(mq) {
