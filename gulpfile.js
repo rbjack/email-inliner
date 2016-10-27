@@ -14,30 +14,30 @@ var prettify  = require( 'gulp-prettify');
 // Any images will need to me moved (manually) to the 
 // "build" directory once gulp has been executed
 
+
+// compose analytic parameter
+function getParameters(href, parameters, utm, tag) {
+
+  var utmPatt = new RegExp("^(utm_"+ utm +"\=)", ''), 
+    params = "";
+
+  if (utmPatt.test(href) === false) {
+    if (parameters !== "") { parameters += "&"; }
+    params += "utm_"+ utm +"="+ tag;
+  }
+
+  return params;
+}
+
 // add tracking to link
 function addTracking(href, utmSource, utmMedium, utmCampaign, utmContent) {
 
   var parameters = "";
 
-  if (/^(utm_campaign\=)/.test(href) === false) {
-    if (parameters !== "" ) { parameters += "&"; }
-    parameters += "utm_campaign="+utmCampaign;
-  }
-
-  if (/^(utm_source\=)/.test(href) === false) {
-    if (parameters !== "" ) { parameters += "&"; }
-    parameters += "utm_source="+utmSource;
-  }
-
-  if (/^(utm_medium\=)/.test(href) === false) {
-    if (parameters !== "" ) { parameters += "&"; }
-    parameters += "utm_medium="+utmMedium;
-  }
-
-  if (/^(utm_content\=)/.test(href) === false) {
-    if (parameters !== "" ) { parameters += "&"; }
-    parameters += "utm_content="+utmContent;
-  }
+  parameters += getParameters(href, parameters, 'campaign', utmCampaign);
+  parameters += getParameters(href, parameters, 'source', utmSource);
+  parameters += getParameters(href, parameters, 'medium', utmMedium);
+  parameters += getParameters(href, parameters, 'content', utmContent);
 
   if (parameters !== "") {
     return href.replace(/([^#]*)/, function(uri) {
