@@ -220,7 +220,7 @@ gulp.task('prettify', ['remove-not-inline-media-query'], function(callback) {
     .pipe( gulp.dest( 'build' ) );
 });
 
-// 
+// Reduced css to one line per selector(s)
 gulp.task('css-selector-per-line', ['prettify'], function(callback) {
 
   // loop through all html files
@@ -247,7 +247,7 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
             css = css.replace(/\s\s+/g, ' ');          // remove more than one space between everything
 
             // formats
-            css = css.replace(/\}\s/g, "}\n      ");   // add new line to end of selector + spacing
+            css = css.replace(/\}\s/g, "\}\n      ");   // add new line to end of selector + spacing
             css = css.replace(/"\>/g, "\"\>\n     ");  // add new line to end of first selector + spacing
             css = css.replace(/  \<\//g, '\<\/');      // remove spacing before end of style tag
 
@@ -256,11 +256,11 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
               return mq.replace(/\{\s/g, "\{\n      ");
             });
 
-            // Indend selectors inside @media query
+            // Indent selectors inside @media query
             css = css.replace(/@media[^{]+\{([\s\S]+?})\s*}/igm, function(mq) {
 
               var format = mq.replace(/\n/g, "\n  ");
-              return format.replace(/  \}$/, '\}');
+              return format.replace(/  \}$/, '\}'); // undo indent at end of media query
             });
 
             return css;
