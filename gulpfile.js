@@ -83,7 +83,7 @@ function setTracking(linkData, utmSource, utmMedium, utmCampaign) {
 }
 
 // add google analytic parameters to links
-gulp.task('links', ['prettify'], function(callback) {
+gulp.task('links', ['css-selector-per-line'], function(callback) {
 
   // loop through all html files
   glob('./build/*.html', function (err, matches) {
@@ -218,6 +218,73 @@ gulp.task('prettify', ['remove-not-inline-media-query'], function(callback) {
       wrap_line_length: 0
     } ) )
     .pipe( gulp.dest( 'build' ) );
+});
+
+gulp.task('css-selector-per-line', ['prettify'], function(callback) {
+
+  // loop through all html files
+  glob('./build/*.html', function (err, matches) {
+    if (err) { return console.log(err); }
+
+    var i, count = 0;
+
+    for(i = 0; i < matches.length; i++) {
+
+      // get the wildcard filename
+      var filename = matches[i];
+
+      // enclose the filename inside an IIFE
+      (function(filename) {
+        return fs.readFile(filename, 'utf8', function (err,data) {
+          if (err) { return console.log(err); }
+
+          // regex target all styles in a "not inline" media query
+          var result = data.replace(/\<style[^\>]+\>([\s\S]+?\<\/style\>)/igm, function(styles) {
+
+            // resets
+            var css = styles.replace(/\r?\n|\r/g, ''); // remove `new lines` &/or `carriage returns`
+            css = css.replace(/\s\s+/g, ' ');          // remove more than one space between everything
+
+            // formats
+            css = css.replace(/\}\s/g, "}\n      ");   // add new line to end of selector + spacing
+            css = css.replace(/"\>/g, "\"\>\n     ");  // add new line to end of first selector + spacing
+            css = css.replace(/  \<\//g, '\<\/');      // remove spacing before end of style tag
+
+            // add new line to end of first selector + spacing inside a media query
+            css = css.replace(/@media[^\{]+\{\s/g, function(mq) {
+              return mq.replace(/\{\s/g, "\{\n      ");
+            });
+
+
+            // Indend selectors inside @media query
+            css = css.replace(/@media[^{]+\{([\s\S]+?})\s*}/igm, function(mq) {
+
+              var format = mq.replace(/\n/g, "\n  ");
+              return format.replace(/  \}$/, '\}');
+            });
+
+            return css;
+          });
+
+          // overwrite email with new modifications
+          fs.writeFile(filename, result, function (err) {
+            if (err) return console.log(err);
+
+          });
+
+          // if there is more than one email...
+          count++;
+          if (count >= matches.length) {
+            callback(); // ... continue gulp sequence
+          }
+
+        });
+
+      })(filename);
+
+    }
+
+  });
 });
 
 // Default: start the task cascade
