@@ -7,6 +7,8 @@
     <meta data-utm-campaign="campaign" data-utm-source="newsletter" data-utm-medium="email" />
     <title>Your Message Subject or Title</title>
     <style type="text/css">
+
+      /* generics */
       body {
         width: 100% !important;
         -webkit-text-size-adjust: 100%;
@@ -29,7 +31,6 @@
       td {
         vertical-align: top;
         text-align: left;
-        border-collapse: collapse;
       }
       
       table,
@@ -48,7 +49,8 @@
       a img {
         border: none;
       }
-      
+
+      /* elements */
       body {
         font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
         font-size: 14px;
@@ -80,6 +82,8 @@
       /* using `aria-labelledby` attribute selector to differentiate
        * between inlined and embedded (class) styles
        */
+
+      /* utilities */
       * [aria-labelledby~="block"] {
         display: block;
       }
@@ -94,6 +98,8 @@
       }
       
       @media not inline {
+
+        /* generics */
         #outlook a {
           padding: 0;
         }
@@ -113,6 +119,7 @@
         /* duplicated classes from the inlined styles because
          * some ESP's inject html into formatted emails
          */
+
         table[align] {
           mso-table-lspace: 0pt;
           mso-table-rspace: 0pt;
@@ -126,10 +133,6 @@
         td {
           vertical-align: top;
           text-align: left;
-        }
-
-        td {
-          border-collapse: collapse;
         }
 
         table,
@@ -148,6 +151,7 @@
           border: none;
         }
 
+        /* elements */
         a {
           color: #0071c5;
           text-decoration: none;
@@ -162,12 +166,15 @@
           padding: 0;
         }
 
+        /* utilities */
         .sizeMax-630 {
           max-width: 630px !important;
         }
       }
       
       @media only screen and (max-width: 630px) {
+        
+        /* utilities */
         .sizeMaxFit-lg {
           max-width: 100% !important;
         }
