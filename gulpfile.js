@@ -105,7 +105,7 @@ function setTarget(linkData, targetSetting) {
   var value = '_self'; // default
 
   // is a link...
-  if (href !== null && href[1].substring(0, 4) === 'http') {
+  if (href !== null && href[1].charAt(0) !== '#') {
 
     // ... but not a `pseudo-protocal` link
     if (pseudoProtocals.indexOf(href[1].match('^[a-zA-Z0-9]+[^:]')[0]) < 0) {
