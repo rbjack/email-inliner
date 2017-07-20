@@ -354,7 +354,8 @@ gulp.task('prettify', ['inline-attribute-removal'], function(callback) {
     .pipe( prettify( {
       indent_size: 2,
       indent_inner_html: true,
-      wrap_line_length: 0
+      wrap_line_length: 0,
+      unformatted: ['a', 'br', 'img', 'span', 'strong']
     } ) )
     .pipe( gulp.dest( 'build' ) );
 });
