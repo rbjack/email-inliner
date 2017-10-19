@@ -11,7 +11,7 @@ var inlineCss = require( 'gulp-inline-css' );
 var prettify  = require( 'gulp-prettify');
 
 
-// leave empty "" or choose between "_blank" or "_self" to add to anchor links; 
+// leave empty "" or choose between "_blank" or "_self" to add to anchor links;
 // target attributes already in anchor links will not be overwritten
 var linkTargetAttribute = "_blank";
 
@@ -20,15 +20,10 @@ var linkTargetAttribute = "_blank";
 var inlineAttribute = "aria-labelledby";
 
 
-// NOTE:
-// Any images will need to me moved (manually) to the 
-// "build" directory once gulp has been executed
-
-
 // compose analytic parameter
 function getParameters(href, parameters, utm, tag) {
 
-  var utmPatt = new RegExp("^(utm_"+ utm +"\=)", ''), 
+  var utmPatt = new RegExp("^(utm_"+ utm +"\=)", ''),
     param = "";
 
   if (utmPatt.test(href) === false) {
@@ -52,7 +47,7 @@ function addTracking(href, utmSource, utmMedium, utmCampaign, utmContent) {
   if (parameters !== "") {
     return href.replace(/([^#]*)/, function(uri) {
 
-      if (uri.split("?").length <= 1) { parameters = "?"+parameters; } 
+      if (uri.split("?").length <= 1) { parameters = "?"+parameters; }
       else { parameters = "&"+parameters; }
 
       return uri + parameters;
@@ -239,7 +234,7 @@ gulp.task('links', ['remove-not-inline-media-query'], function(callback) {
           if (utmSourceMatch !== undefined && utmSourceMatch !== null) { utmSource = utmSourceMatch[1]; }
           if (utmMediumMatch !== undefined && utmMediumMatch !== null) { utmMedium = utmMediumMatch[1]; }
           if (utmCampaignMatch !== undefined && utmCampaignMatch !== null) { utmCampaign = utmCampaignMatch[1]; }
-          
+
           var file = data;
 
           // if analytics defined
@@ -428,9 +423,14 @@ gulp.task('css-selector-per-line', ['prettify'], function(callback) {
   });
 });
 
+// move image files
+gulp.task('images', ['css-selector-per-line'], function(callback) {
+  return gulp.src( 'images/**/*' )
+    .pipe( gulp.dest( 'build/images' ) );
+});
 
 // Default: start the task cascade
-gulp.task('default', ['css-selector-per-line'], function(callback) {
+gulp.task('default', ['images'], function(callback) {
 
   // ready, set, go
 
